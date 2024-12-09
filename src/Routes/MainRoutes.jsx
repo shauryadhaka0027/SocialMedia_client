@@ -9,7 +9,7 @@ import EditPost from '../Components/EditPost/EditPost.jsx'
 
 
 
-const MainRoute = () => {
+const MainRoutes = () => {
 
   return (
     <div>
@@ -28,4 +28,4 @@ const MainRoute = () => {
   )
 }
 
-export default MainRoute
+export default MainRoutes
