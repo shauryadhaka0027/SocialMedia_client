@@ -1,0 +1,36 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+* Gradient Background with Subtle Animation */
+
+/* Smooth scrolling for a better experience */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Dark Mode Styled Scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+  
+  
+}
+
+::-webkit-scrollbar-track {
+  background: rgb(243, 243, 243);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgb(220, 219, 219);
+
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: white;
+}
+
+
+
+
