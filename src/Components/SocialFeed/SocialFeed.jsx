@@ -326,6 +326,7 @@ const SocialFeed = () => {
                   onClick={() => onFeedLikes(post)}
                 >
                   <AiOutlineLike />
+                  {post?.likes.length}
                 </div>
                 <div
                   className="flex items-center gap-1 cursor-pointer hover:text-blue-500"
