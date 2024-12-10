@@ -19,6 +19,7 @@ const SocialFeed = () => {
   const { userInformation } = useZustand();
   useListenNotifications()
   const [content, setContent] = useState("");
+  const [commentContent, setCommentContent] = useState("")
   const [profileImage, setProfileImage] = useState(null);
   const [activeCommentPostId, setActiveCommentPostId] = useState(null);
   const { posts, setPosts } = useZustand();
@@ -59,7 +60,13 @@ const SocialFeed = () => {
   const onChangeValue = (e) => {
     const { value } = e.target;
     setContent(value);
+
   };
+
+  const onChangeValueComment = (e) => {
+    const { value } = e.target;
+    setCommentContent(value)
+  }
 
   const onSubmitForm = (e) => {
     e.preventDefault();
@@ -96,6 +103,7 @@ const SocialFeed = () => {
 
 
   const onFeedLikes = (post) => {
+
     getLikesPost.mutateAsync(
       { postId: post._id, userId: userInformation?._id },
       {
@@ -105,11 +113,13 @@ const SocialFeed = () => {
             sender: userInformation?._id,
             postId: post._id,
           };
-          if (!(post.likes.includes(userInformation?._id))) {
-            if (socket) {
+          // console.log("data?.data?.likes?", data?.data?.likes)
+          // console.log("data?.data?.likes?", data?.data)
+
+          if ((data?.data?.likes?.includes(userInformation?._id))) {
+            if (data?.data?.user !== userInformation?._id) {
+              // console.log("no like", data?.data?.likes?.includes(userInformation?._id))
               socket.emit("like", data2);
-            } else {
-              console.error("Socket not connected");
             }
           }
           notification.success({
@@ -143,7 +153,7 @@ const SocialFeed = () => {
     e.preventDefault();
     const dataObj = {
       userId: userInformation?._id,
-      content: content,
+      content: commentContent,
       postId: activeCommentPostId,
     };
     const data2 = {
@@ -153,11 +163,20 @@ const SocialFeed = () => {
     };
     getCommentsPost.mutateAsync(dataObj, {
       onSuccess: (data) => {
-        if (socket) {
-          socket.emit("comment", data2);
-        } else {
-          console.error("Socket not connected");
+
+
+        // console.log("commment data", data?.data)
+        if (data?.data?.comments.length > 0) {
+          const lastArr = data?.data?.comments
+          const lastComment = lastArr[lastArr.length - 1]
+          // console.log("lastArr", lastComment)
+          // console.log("comment", lastComment?.user, "!==", data?.data?.user)
+          if (lastComment?.user !== data?.data?.user) {
+            socket.emit("comment", data2);
+
+          }
         }
+
 
         notification.success({
           type: "success",
@@ -195,7 +214,7 @@ const SocialFeed = () => {
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-    // console.log("fillllle",file);
+
     if (file) {
       setProfileImage(file);
     }
@@ -352,8 +371,8 @@ const SocialFeed = () => {
                         type="text"
                         placeholder="Add a comment..."
                         name="comment"
-                        value={content}
-                        onChange={onChangeValue}
+                        value={commentContent}
+                        onChange={onChangeValueComment}
                         className="w-full h-12 border border-gray-300 rounded-lg px-4 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                     </div>
