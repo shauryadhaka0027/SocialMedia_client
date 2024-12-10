@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import smApi from "../../api/smApi";
 import { useNavigate } from "react-router-dom";
 import { useZustand } from "../../Zustand/useZustand";
+import { notification } from "antd";
 
 const SignUp = () => {
   const [profileImage, setProfileImage] = useState(null);
@@ -16,7 +17,6 @@ const SignUp = () => {
     password: "",
   });
 
-  // Mutation for signup
   const userSignup = useMutation({
     mutationFn: async (data) => {
       const form = new FormData();
@@ -40,24 +40,38 @@ const SignUp = () => {
       ...formData,
       profilePicture: profileImage,
     };
-
+  
     try {
-   
       await userSignup.mutateAsync(formToSubmit, {
         onSuccess: (data) => {
-          localStorage.setItem("userData", JSON.stringify({ data: data.data, token: data.token }));
-      
-          navigate("/")
-
-          alert("Form submitted successfully!");
+         
+          
+          if (data && data.data && data.token) {
+            localStorage.setItem("userData", JSON.stringify({ data: data.data, token: data.token }));
+            navigate("/");
+            notification.success({
+              type: "success",
+              message: data.message,
+              duration: 2,
+            });
+          } else {
+            console.error("Response structure is not as expected.");
+          }
+        },
+        onError: (err) => {
+          console.error("Signup error:", err);
+          notification.error({
+            type: "error",
+            message: err?.response?.data?.message,
+            duration: 2,
+          });
         }
       });
     } catch (error) {
       console.error("Signup failed:", error);
-      alert("Failed to sign up. Please try again.");
     }
   };
-
+  
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -66,44 +80,37 @@ const SignUp = () => {
   };
   const validateForm = () => {
     const newErrors = {};
-
+  
     const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{6,}$/;
-    
-    // if (!passwordRegex.test(newPassword)) {
-    //    setError("Password must be at least 6 characters long, contain one uppercase letter, one lowercase letter, and one digit.")
-    //     return;
-    // }
-
+  
     if (!formData.username) {
       newErrors.username = "Username is required";
     }
-
-
+  
     if (!formData.email) {
       newErrors.email = "Email is required";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = "Email address is invalid";
     }
-
+  
     if (!formData.password) {
       newErrors.password = "Password is required";
-    } else if (passwordRegex(formData.password)) {
+    } else if (!passwordRegex.test(formData.password)) {
       newErrors.password = "Password must be at least 6 characters long, contain one uppercase letter, one lowercase letter, and one digit.";
     }
-
-
+  
     if (!formData.bio) {
       newErrors.bio = "Bio is required";
     }
-
+  
     if (!profileImage) {
       newErrors.profileImage = "Profile image is required";
     }
-
+  
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-
+  
   const onChangeValue = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
