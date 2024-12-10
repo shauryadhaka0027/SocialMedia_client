@@ -81,7 +81,7 @@ const SignUp = () => {
   const validateForm = () => {
     const newErrors = {};
   
-    const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{6,}$/;
+    // const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{6,}$/;
   
     if (!formData.username) {
       newErrors.username = "Username is required";
@@ -95,9 +95,7 @@ const SignUp = () => {
   
     if (!formData.password) {
       newErrors.password = "Password is required";
-    } else if (!passwordRegex.test(formData.password)) {
-      newErrors.password = "Password must be at least 6 characters long, contain one uppercase letter, one lowercase letter, and one digit.";
-    }
+    } 
   
     if (!formData.bio) {
       newErrors.bio = "Bio is required";
