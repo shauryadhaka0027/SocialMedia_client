@@ -4,11 +4,13 @@ import smApi from "../../api/smApi";
 import { useNavigate } from "react-router-dom";
 import { useZustand } from "../../Zustand/useZustand";
 import { notification } from "antd";
+import { LoadingOutlined } from '@ant-design/icons';
 
 const SignUp = () => {
   const [profileImage, setProfileImage] = useState(null);
   const [errors, setErrors] = useState({});
   const navigate = useNavigate(); 
+  
 
   const [formData, setFormData] = useState({
     email: "",
@@ -217,7 +219,9 @@ const SignUp = () => {
             className="w-full bg-blue-500 text-white py-2 rounded-md shadow-md hover:bg-blue-600 transition"
             disabled={Object.keys(errors).length > 0}
           >
-            Signup
+            {userSignup?.isPending ? <span className="animate-spin">
+                  <LoadingOutlined />
+                </span>:"Sign Up"}
           </button>
         </form>
       </div>

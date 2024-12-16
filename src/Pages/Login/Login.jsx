@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import smApi from "../../api/smApi";
 import { notification } from "antd";
+import { LoadingOutlined } from '@ant-design/icons';
 
 const Login = () => {
    const navigate=useNavigate()
@@ -106,7 +107,10 @@ const Login = () => {
               type="submit"
               className="w-full bg-blue-500 text-white py-2 rounded-md shadow-md hover:bg-blue-600 transition"
             >
-              Login
+            
+              {userLogin?.isPending ?<span className="animate-spin">
+                  <LoadingOutlined />
+                </span>:"Login"}
             </button>
           </form>
           <p className="mt-6 text-sm text-gray-500">or login with social platforms</p>
