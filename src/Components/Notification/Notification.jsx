@@ -5,7 +5,7 @@ import smApi from '../../api/smApi';
 import { Badge } from 'antd';
 import timeAgo from '../../utils/convertIndianTime';
 
-const Notification = () => {
+const Notification = ({readNotification}) => {
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [showNotification,setShowNotification] = useState([])
     const {
@@ -51,8 +51,12 @@ const Notification = () => {
         fetchNotificationsData();
     }, [userInformation]); 
 
-    console.log("Starting",notification)
-    console.log("kkksk",showNotification)
+    // console.log("Starting",notification)
+    // console.log("kkksk",showNotification)
+    const OnClickNotificationIcon = () => {
+        readNotification()
+        setCountNotification(0)
+    }
 
     return (
         <div className="flex justify-center w-auto">
@@ -61,7 +65,7 @@ const Notification = () => {
                     onClick={() => setDropdownOpen(!dropdownOpen)}
                     className="relative z-10 block rounded-md bg-white p-2 focus:outline-none"
                 >
-                    <Badge count={countNotification} onClick={() => setCountNotification(0)}>
+                    <Badge count={countNotification} onClick={OnClickNotificationIcon}>
                         <svg
                             className="h-5 w-5 text-gray-800"
                             xmlns="http://www.w3.org/2000/svg"

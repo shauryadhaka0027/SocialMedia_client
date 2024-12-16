@@ -4,12 +4,40 @@ import { AiOutlineMenu } from "react-icons/ai";
 import { useZustand } from "../../Zustand/useZustand";
 import Notification from "../Notification/Notification";
 import ChangePassword from "../ChangePassword/ChangePassword";
+import { useMutation } from "@tanstack/react-query";
+import smApi from "../../api/smApi";
 
 export const Navbar = () => {
-  const { userInformation } = useZustand();
+  const { userInformation ,setNotification,} = useZustand();
   const [isShowMenu, setIsShowMenu] = useState(false);
   const {setISHidden,isHidden}=useZustand()
   const menuRef = useRef(null);
+
+const seenNotification=useMutation({
+  mutationFn:smApi.getNotifications
+})
+
+
+  
+  const fetchNotificationsData = () => {
+    if (!userInformation?._id) return;
+
+    seenNotification.mutate(
+        { id: userInformation._id,readNotification: true},
+        {
+            onSuccess: (data) => {
+              // setNotification([])
+            }
+        }
+    );
+};
+
+const readNotification = ()=>{
+
+    fetchNotificationsData()
+ 
+}
+
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -47,7 +75,7 @@ export const Navbar = () => {
         </div>
 
         <div className="flex items-center gap-5">
-          <Notification />
+          <Notification  readNotification={readNotification} />
 
           <div className="hidden md:flex items-center">
             <img
