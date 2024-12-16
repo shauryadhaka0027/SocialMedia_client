@@ -6,6 +6,7 @@ import smApi from "../../api/smApi";
 import { ProfileImageChange } from "../ProfileChangeImage/ProfileImageChange";
 import ChangePassword from "../ChangePassword/ChangePassword";
 import { Button, notification } from "antd";
+import { LoadingOutlined } from '@ant-design/icons';
 
 const UserCard = () => {
   const { userInformation, setUserInformation,isHidden } = useZustand()
@@ -132,7 +133,9 @@ const UserCard = () => {
         </li>
         <li className="flex items-center gap-3 text-gray-600 cursor-pointer hover:text-blue-500">
           <i className="bx bx-cog text-lg"></i>
-          <Button className="border-2 text-red-600 border-red-600" onClick={logout}>Logout</Button>
+          <Button className="border-2 text-red-600 border-red-600" onClick={logout}>{userLogout?.isPending ?<span className="animate-spin">
+                  <LoadingOutlined />
+                </span>:"Logout"}</Button>
         </li>
       </ul>
     </div>
