@@ -4,8 +4,8 @@ import { useMutation } from '@tanstack/react-query';
 import smApi from '../../api/smApi';
 import { Badge } from 'antd';
 import timeAgo from '../../utils/convertIndianTime';
-import FriendRequestCard from '../FriendRequestCard/FriendRequestCard';
 import { SocketContext } from '../../context/SocketContext';
+import FriendRequestCard from '../FriendRequestCard/FriendRequestCard';
 
 const Notification = ({ readNotification }) => {
     const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -82,7 +82,7 @@ const Notification = ({ readNotification }) => {
                     setCountNotification(0);
                     const latestNotification = response?.data;
                     setShowNotification(latestNotification);
-                    const notification={
+                    const notification11={
                         _id:data?._id,
                         sender:data?.sender
                     }
@@ -94,7 +94,7 @@ const Notification = ({ readNotification }) => {
                                 setOnAcceptUserId(data?.sender?._id)
                                 setIsAcceptRequest(true);
                                 setDropdownOpen(!dropdownOpen)
-                                socket.emit("Accept",notification );
+                                socket.emit("Accept",notification11 );
                             
 
                             },
