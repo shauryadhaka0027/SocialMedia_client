@@ -6,12 +6,13 @@ import smApi from "../../api/smApi";
 import { ProfileImageChange } from "../ProfileChangeImage/ProfileImageChange";
 import ChangePassword from "../ChangePassword/ChangePassword";
 import { Button, notification } from "antd";
-import { LoadingOutlined } from '@ant-design/icons';
+import { useNavigate } from "react-router-dom";
 
 const UserCard = () => {
   const { userInformation, setUserInformation,isHidden } = useZustand()
   const [isopen, setIsOpen] = useState(false)
   const [isclosed, setIsClosed] = useState(false)
+  const navigate=useNavigate()
   const [isChangePassword, setIsChangePassword] = useState(false)
   const getUserDetailsById = useMutation({
     mutationFn: smApi.getUserDetailsById
@@ -42,6 +43,7 @@ const UserCard = () => {
         onError: (error) => {
           if (error?.response?.data.msg === "Token is not provided") {
             localStorage.removeItem('userData')
+          
             window.location.href = "/login"
           }
           console.error("Error fetching user details:", error);
@@ -82,12 +84,12 @@ const UserCard = () => {
     userLogout.mutate({}, {
       onSuccess: (data) => {
 
+       navigate("/login")
         localStorage.removeItem('userData')
-        window.location.href = "/login"
 
         notification.success({
           type: "success",
-          message: data.msg,
+          message: data?.Message,
         })
       }
     })
@@ -133,9 +135,7 @@ const UserCard = () => {
         </li>
         <li className="flex items-center gap-3 text-gray-600 cursor-pointer hover:text-blue-500">
           <i className="bx bx-cog text-lg"></i>
-          <Button className="border-2 text-red-600 border-red-600" onClick={logout}>{userLogout?.isPending ?<span className="animate-spin">
-                  <LoadingOutlined />
-                </span>:"Logout"}</Button>
+          <Button className="border-2 text-red-600 border-red-600" onClick={logout}>Logout</Button>
         </li>
       </ul>
     </div>
