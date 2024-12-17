@@ -47,7 +47,7 @@ const SocialFeed = () => {
   })
 
   const getUserPostData = () => {
-    getUserPost.mutateAsync({}, {
+    getUserPost.mutateAsync({userId:userInformation?._id}, {
       onSuccess: (data) => {
         // console.log("userDataget", data.data);
         // const latestUpdate = data.data?.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
