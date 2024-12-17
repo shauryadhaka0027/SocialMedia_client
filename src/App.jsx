@@ -1,14 +1,13 @@
 import "./App.css";
-
-import MainRoutes from "./Routes/MainRoutes";
-
-
+import { Navbar } from "./Components/Navbar/Navbar";
+import { HomePage } from "./Pages/HomePage/HomePage";
+import MainRoute from "./routes/mainRoute";
 
 function App() {
 return<>
-<MainRoutes/>
-
-{/* <h1>hhhh</h1> */}
+<MainRoute/>
+{/* <Navbar/>
+<HomePage/> */}
 </>
 }
 
