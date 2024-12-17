@@ -104,6 +104,7 @@ const Notification = ({ readNotification }) => {
                 },
                 onError: (error) => {
                     console.error("Error accepting friend request:", error);
+                    console.log(error)
                 },
             }
         );
