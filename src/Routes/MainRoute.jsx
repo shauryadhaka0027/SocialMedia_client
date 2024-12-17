@@ -3,7 +3,6 @@ import { Navigate, Route, Routes } from 'react-router-dom'
 import Login from '../Pages/Login/Login'
 import SignUp from '../Pages/SignUp/SignUp'
 import { HomePage } from '../Pages/HomePage/HomePage'
-import { useZustand } from '../Zustand/useZustand'
 import { PrivateRoute } from './PrivateRoute.jsx'
 import EditPost from '../Components/EditPost/EditPost.jsx'
 
