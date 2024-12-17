@@ -27,5 +27,15 @@ export const useZustand = create((set) => ({
      isHidden: true,
      setISHidden: (isHidden) => set({ isHidden }),
 
+     followStatus:{},
+     setFollowStatus:(followStatus) => set({ followStatus}),
+
+     isAcceptRequest:false,
+     setIsAcceptRequest: (isAcceptRequest) => set({ isAcceptRequest }),
+
+     onAcceptUserId:"",
+     setOnAcceptUserId: (onAcceptUserId) => set({ onAcceptUserId }),
+
+
 
 }));

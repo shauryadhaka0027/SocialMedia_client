@@ -1,19 +1,27 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useContext } from 'react';
 import { useZustand } from '../../Zustand/useZustand';
 import { useMutation } from '@tanstack/react-query';
 import smApi from '../../api/smApi';
 import { Badge } from 'antd';
 import timeAgo from '../../utils/convertIndianTime';
+import FriendRequestCard from '../FriendRequestCard/FriendRequestCard';
+import { SocketContext } from '../../context/SocketContext';
 
-const Notification = ({readNotification}) => {
+const Notification = ({ readNotification }) => {
     const [dropdownOpen, setDropdownOpen] = useState(false);
-    const [showNotification,setShowNotification] = useState([])
+    const {socket}=useContext(SocketContext)
+    const [showNotification, setShowNotification] = useState([])
     const {
         userInformation,
-        notification, 
+        notification,
         setNotification,
         countNotification,
-        setCountNotification
+        setCountNotification,
+        setPosts,
+        setUserInformation,
+        setIsAcceptRequest,
+        setOnAcceptUserId,
+
     } = useZustand();
 
     const getNotifications = useMutation({
@@ -27,8 +35,10 @@ const Notification = ({readNotification}) => {
             { id: userInformation._id },
             {
                 onSuccess: (data) => {
+
                     if (Array.isArray(data?.data)) {
-                        setNotification([...notification,...data?.data]);
+                        setNotification([...notification, ...data?.data]);
+                        setCountNotification(data?.data?.length)
                     } else {
                         console.error('Unexpected data format:', data);
                     }
@@ -36,27 +46,73 @@ const Notification = ({readNotification}) => {
             }
         );
     };
-
+    const acceptRequest = useMutation({
+        mutationFn: smApi.acceptRequest
+    })
+    const getUserPost = useMutation({
+        mutationFn: smApi.getUserPost,
+    });
     useEffect(() => {
-       
-        const latestNotification = notification.slice(-6); 
+        const latestNotification = notification.slice(-6);
         latestNotification.sort(
             (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
         );
-         setShowNotification(latestNotification)
+        setShowNotification(latestNotification)
     }, [notification]);
 
-   
+
     useEffect(() => {
         fetchNotificationsData();
-    }, [userInformation]); 
+    }, [userInformation]);
 
-    // console.log("Starting",notification)
-    // console.log("kkksk",showNotification)
+
     const OnClickNotificationIcon = () => {
         readNotification()
         setCountNotification(0)
     }
+
+
+    const handleAccept = (data) => {
+      
+        acceptRequest.mutate(
+            { _id: data._id },
+             
+            {
+                onSuccess: (response) => {
+                    setCountNotification(0);
+                    const latestNotification = response?.data;
+                    setShowNotification(latestNotification);
+                    const notification={
+                        _id:data?._id,
+                        sender:data?.sender
+                    }
+                    getUserPost.mutate(
+                        {},
+                        {
+                            onSuccess: (postData) => {
+                                setPosts(postData?.data);
+                                setOnAcceptUserId(data?.sender?._id)
+                                setIsAcceptRequest(true);
+                                setDropdownOpen(!dropdownOpen)
+                                socket.emit("Accept",notification );
+                            
+
+                            },
+                        }
+                    );
+
+                },
+                onError: (error) => {
+                    console.error("Error accepting friend request:", error);
+                },
+            }
+        );
+    };
+
+
+    const handleReject = () => {
+        alert("Friend request rejected!");
+    };
 
     return (
         <div className="flex justify-center w-auto">
@@ -96,13 +152,21 @@ const Notification = ({readNotification}) => {
                                             alt="avatar"
                                         />
                                         <div className="text-gray-600 text-sm mx-2 p-1">
-                                            {data?.type === 'follow' && (
-                                                <>
-                                                    <span className="font-bold">{data?.sender?.username}</span>
-                                                    <span className="text-blue-500 px-1">
-                                                        started following you.
-                                                    </span>
-                                                </>
+                                            {(data?.type === 'follow' && data?.read)&& (
+                                                // <>
+                                                //     <span className="font-bold">{data?.sender?.username}</span>
+                                                //     <span className="text-blue-500 px-1">
+                                                //         started following you.
+                                                //     </span>
+                                                // </>
+
+                                                <FriendRequestCard
+
+                                                    data={data}
+                                                    onAccept={handleAccept}
+                                                    onReject={handleReject}
+                                                />
+
                                             )}
                                             {data?.type === 'like' && (
                                                 <>
@@ -114,6 +178,12 @@ const Notification = ({readNotification}) => {
                                                 <>
                                                     <span className="font-bold">{data?.sender?.username}</span>
                                                     <span className="text-blue-500"> commented on your post.</span>
+                                                </>
+                                            )}
+                                               {data?.accept && (
+                                                <>
+                                                    <span className="font-bold">{data?.sender?.username}</span>
+                                                    <span className="text-blue-500">Friend Request Accept</span>
                                                 </>
                                             )}
                                             <p className="flex justify-end font-extrabold">

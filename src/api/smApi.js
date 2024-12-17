@@ -208,6 +208,26 @@ class FetchData {
       throw error;
     }
   }
+
+  async acceptRequest(data){
+    try {
+      const response = await fetchApi.post(ApiUrl.notification.acceptRequest, data);
+      return response.data;
+    } catch (error) {
+      console.error("Error while accepting friend request:", error);
+      throw error;
+    }
+  }
+
+  async searchUser(data){
+    try {
+      const response = await fetchApi.post(ApiUrl.search.searchUser, data);
+      return response.data;
+    } catch (error) {
+      console.error("Error while searching user:", error);
+      throw error;
+    }
+  }
 }
 
 export default new FetchData();

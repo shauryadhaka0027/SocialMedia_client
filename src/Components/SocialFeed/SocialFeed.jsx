@@ -19,7 +19,7 @@ const SocialFeed = () => {
   const { userInformation } = useZustand();
   useListenNotifications()
   const [content, setContent] = useState("");
-  const [commentContent, setCommentContent] = useState("")
+  const [commentContent,setCommentContent] = useState("")
   const [profileImage, setProfileImage] = useState(null);
   const [activeCommentPostId, setActiveCommentPostId] = useState(null);
   const { posts, setPosts } = useZustand();
@@ -60,10 +60,10 @@ const SocialFeed = () => {
   const onChangeValue = (e) => {
     const { value } = e.target;
     setContent(value);
-
+    
   };
 
-  const onChangeValueComment = (e) => {
+  const onChangeValueComment=(e)=>{
     const { value } = e.target;
     setCommentContent(value)
   }
@@ -99,9 +99,6 @@ const SocialFeed = () => {
   };
 
 
-
-
-
   const onFeedLikes = (post) => {
 
     getLikesPost.mutateAsync(
@@ -113,12 +110,10 @@ const SocialFeed = () => {
             sender: userInformation?._id,
             postId: post._id,
           };
-          // console.log("data?.data?.likes?", data?.data?.likes)
-          // console.log("data?.data?.likes?", data?.data)
-
+        
           if ((data?.data?.likes?.includes(userInformation?._id))) {
             if (data?.data?.user !== userInformation?._id) {
-              // console.log("no like", data?.data?.likes?.includes(userInformation?._id))
+              console.log("no like", data?.data?.likes?.includes(userInformation?._id))
               socket.emit("like", data2);
             }
           }
@@ -141,14 +136,14 @@ const SocialFeed = () => {
 
 
   const toggleCommentBox = (post) => {
-    // console.log("toggleCommentBox",post)
+
     setPostUserId(post?.user)
     setPostId(post)
     setActiveCommentPostId((prevPostId) => (prevPostId === post?._id ? null : post?._id));
 
 
   };
-  // console.log('postUserId', postId)
+
   const onSubmitComments = (e) => {
     e.preventDefault();
     const dataObj = {
@@ -164,26 +159,22 @@ const SocialFeed = () => {
     getCommentsPost.mutateAsync(dataObj, {
       onSuccess: (data) => {
 
-
-        // console.log("commment data", data?.data)
         if (data?.data?.comments.length > 0) {
           const lastArr = data?.data?.comments
           const lastComment = lastArr[lastArr.length - 1]
-          // console.log("lastArr", lastComment)
-          // console.log("comment", lastComment?.user, "!==", data?.data?.user)
           if (lastComment?.user !== data?.data?.user) {
             socket.emit("comment", data2);
-
+            
           }
         }
-
-
+     
         notification.success({
           type: "success",
           message: data.msg,
         });
         toggleCommentBox(null);
         setContent("")
+        setCommentContent("")
         getUserPostData();
       },
     });
@@ -214,7 +205,7 @@ const SocialFeed = () => {
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-
+    // console.log("fillllle",file);
     if (file) {
       setProfileImage(file);
     }
@@ -261,7 +252,7 @@ const SocialFeed = () => {
                 className="hidden"
                 onChange={handleImageChange}
               />
-              <IoIosHappy size={20} className="cursor-pointer hover:text-blue-500" />
+              {/* <IoIosHappy size={20} className="cursor-pointer hover:text-blue-500" /> */}
             </div>
             <button className="px-4 py-2 bg-blue-500 text-white rounded-lg text-sm">
               Post it
@@ -279,7 +270,7 @@ const SocialFeed = () => {
 
 
       <div className="h-[59vh] overflow-y-auto scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-gray-200 p-2">
-        {posts.map((post) => (
+        {posts?.map((post) => (
           <div key={post._id} className="bg-white shadow-lg rounded-lg p-4 mb-6">
             <div className="flex items-start justify-between">
               <div className="flex items-center gap-4">

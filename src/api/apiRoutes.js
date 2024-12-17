@@ -24,9 +24,13 @@ export const ApiUrl={
     },
     notification:{
         getUserNotification:"/user/getNotifications",
+        acceptRequest:"/user/acceptRequest"
       
     },
     logout:{
         logoutUser:"/user/logout"
+    },
+    search:{
+        searchUser:"/user/search"
     }
 }

@@ -22,7 +22,7 @@ const useListenNotifications = () => {
           socket.off(eventName);
         };
       }
-    }, [socket, userInformation, setNotification,notification]);
+    }, [socket, setNotification,notification]);
   
     return { notification };
   };
