@@ -69,6 +69,7 @@ const Notification = ({ readNotification }) => {
     const OnClickNotificationIcon = () => {
         readNotification()
         setCountNotification(0)
+
     }
 
 
@@ -95,7 +96,7 @@ const Notification = ({ readNotification }) => {
                                 setIsAcceptRequest(true);
                                 setDropdownOpen(!dropdownOpen)
                                 socket.emit("Accept",notification11 );
-                            
+                                setNotification([])
 
                             },
                         }
